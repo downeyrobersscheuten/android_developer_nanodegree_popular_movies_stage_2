@@ -17,4 +17,14 @@
         android:layout_height="match_parent"
         android:text="@string/please_connect_to_the_internet"/>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_favorites"
+        android:layout_width="wrap_content"
+        android:background="@color/white"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:src="@drawable/ic_favorite_black_24dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="60dp"/>
+
 </android.support.design.widget.CoordinatorLayout>

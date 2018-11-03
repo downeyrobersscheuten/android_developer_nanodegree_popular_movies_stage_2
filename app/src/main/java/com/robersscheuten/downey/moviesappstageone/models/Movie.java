@@ -1,5 +1,8 @@
 package com.robersscheuten.downey.moviesappstageone.models;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -9,9 +12,13 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Movie data class.
  */
+@Entity
 public class Movie implements Parcelable {
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-
+    @PrimaryKey
     @SerializedName("id")
     @Expose
     public Integer id;
@@ -24,26 +31,32 @@ public class Movie implements Parcelable {
     @Expose
     private Double voteAverage;
 
+    @ColumnInfo(name = "title")
     @SerializedName("title")
     @Expose
     public String title;
 
+    @ColumnInfo(name = "popularity")
     @SerializedName("popularity")
     @Expose
     private Double popularity;
 
+    @ColumnInfo(name = "poster_path")
     @SerializedName("poster_path")
     @Expose
     public String posterPath;
 
+    @ColumnInfo(name = "original_title")
     @SerializedName("original_title")
     @Expose
     private String originalTitle;
 
+    @ColumnInfo(name = "overview")
     @SerializedName("overview")
     @Expose
     private String overview;
 
+    @ColumnInfo(name = "release_data")
     @SerializedName("release_date")
     @Expose
     private String releaseDate;
@@ -91,7 +104,6 @@ public class Movie implements Parcelable {
         return 0;
     }
 
-
     public Integer getId() {
         return id;
     }
@@ -126,5 +138,37 @@ public class Movie implements Parcelable {
 
     public String getReleaseDate() {
         return releaseDate;
+    }
+
+    public void setVideo(Boolean video) {
+        this.video = video;
+    }
+
+    public void setVoteAverage(Double voteAverage) {
+        this.voteAverage = voteAverage;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setPopularity(Double popularity) {
+        this.popularity = popularity;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
+    public void setOriginalTitle(String originalTitle) {
+        this.originalTitle = originalTitle;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
     }
 }

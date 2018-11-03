@@ -6,15 +6,18 @@ import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.robersscheuten.downey.moviesappstageone.R;
 import com.robersscheuten.downey.moviesappstageone.adapters.MoviesAdapter;
+import com.robersscheuten.downey.moviesappstageone.data.Database;
 import com.robersscheuten.downey.moviesappstageone.models.Movie;
 import com.robersscheuten.downey.moviesappstageone.models.MoviesResponse;
 import com.robersscheuten.downey.moviesappstageone.network.MoviesService;
@@ -23,6 +26,7 @@ import com.robersscheuten.downey.moviesappstageone.utils.Utils;
 
 import java.util.ArrayList;
 
+import io.reactivex.internal.schedulers.NewThreadWorker;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,7 +38,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class MainActivity extends AppCompatActivity implements Utils.onMovieClickListener {
 
-    private final String BASE_URL = "http://api.themoviedb.org/3/movie/";
     private RecyclerView moviesRecyclerView;
     private MoviesService.SearchType defaultFilterSetting;
     private TextView tv_top_rated;
@@ -44,6 +47,16 @@ public class MainActivity extends AppCompatActivity implements Utils.onMovieClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //set favorites button
+        FloatingActionButton fab = findViewById(R.id.fab_favorites);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getBaseContext(), MovieFavoritesActivity.class);
+                startActivity(intent);
+            }
+        });
 
         tv_top_rated = findViewById(R.id.btn_top_rated);
         tv_popular = findViewById(R.id.btn_popular);
@@ -81,10 +94,17 @@ public class MainActivity extends AppCompatActivity implements Utils.onMovieClic
 
         //fix statusbar.
         ConstraintLayout constraintLayout = findViewById(R.id.constraint_layout_buttons);
-        constraintLayout.setPadding(0, Utils.getStatusBarHeight(this), 0, 0);
+        constraintLayout.setPadding(
+                0, Utils.getStatusBarHeight(this),
+                0,
+                0
+        );
 
         //setGestures
-        itemTouchHelper itemTouchHelper = new itemTouchHelper(0, ItemTouchHelper.RIGHT + ItemTouchHelper.LEFT);
+        itemTouchHelper itemTouchHelper = new itemTouchHelper(
+                0,
+                ItemTouchHelper.RIGHT + ItemTouchHelper.LEFT
+        );
         ItemTouchHelper helper = new ItemTouchHelper(itemTouchHelper);
         helper.attachToRecyclerView(moviesRecyclerView);
 
@@ -106,9 +126,10 @@ public class MainActivity extends AppCompatActivity implements Utils.onMovieClic
     public void getMovies(MoviesService.SearchType type,final Context context) {
         //create retrofitBuilder & build a retrofit object
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(Contracts.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+
         //create service
         MoviesService moviesService = retrofit.create(MoviesService.class);
 
@@ -199,15 +220,25 @@ public class MainActivity extends AppCompatActivity implements Utils.onMovieClic
         }
 
         @Override
-        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+        public boolean onMove(RecyclerView recyclerView,
+                              RecyclerView.ViewHolder viewHolder,
+                              RecyclerView.ViewHolder target)
+        {
             this.recyclerView = recyclerView;
             clearView(recyclerView, viewHolder);
             return false;
         }
 
         @Override
-        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        }
+
+        public void onChildDraw(
+                Canvas c,
+                RecyclerView recyclerView,
+                RecyclerView.ViewHolder viewHolder,
+                float dX,
+                float dY,
+                int actionState,
+                boolean isCurrentlyActive){ }
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
